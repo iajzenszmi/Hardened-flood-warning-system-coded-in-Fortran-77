@@ -1,0 +1,931 @@
+Welcome to Ubuntu in UserLAnd!
+userland@localhost:~$ nano hardened_flood_forecast.f
+userland@localhost:~$ f77hardened_flood_forecast.f
+-bash: f77hardened_flood_forecast.f: command not found
+userland@localhost:~$ f77 hardened_flood_forecast.f
+userland@localhost:~$ ./a.out
+
+==========================================================
+  HARDENED FLOOD FORECASTING DEMONSTRATION SYSTEM
+  Version 1.0 - Fortran 77 Implementation
+==========================================================
+  Based on European Flood Forecasting System (EFFS)
+  with impact-based color-coded warnings
+==========================================================
+
+Loading demonstration data...
+
+Data loaded successfully:
+  Stations:   5
+  Forecast days:  7
+
+Generating ensemble forecasts...
+
+Computing ensemble statistics...
+
+Computing flood probabilities...
+
+Determining warning levels...
+
+
+==========================================================
+  FLOOD FORECAST RESULTS
+==========================================================
+
+Station: COLOGNE-RHINE               
+Baseline Level:   3.50 m
+-----------------------------------------------
+Day  Level(m)  +/-SD   Prob  Warning
+-----------------------------------------------
+  1     4.13   0.00    0.0%  GREEN
+  2     4.12   0.01    0.0%  GREEN
+  3     4.15   0.03    0.0%  GREEN
+  4     4.16   0.03    0.0%  GREEN
+  5     4.11   0.04    0.0%  GREEN
+  6     4.05   0.03    0.0%  GREEN
+  7     3.97   0.03    0.0%  GREEN
+-----------------------------------------------
+
+Station: KOBLENZ-RHINE               
+Baseline Level:   2.80 m
+-----------------------------------------------
+Day  Level(m)  +/-SD   Prob  Warning
+-----------------------------------------------
+  1     3.09   0.00    0.0%  GREEN
+  2     3.14   0.01    0.0%  GREEN
+  3     3.24   0.03    0.0%  GREEN
+  4     3.29   0.04    0.0%  GREEN
+  5     3.28   0.04    0.0%  GREEN
+  6     3.23   0.04    0.0%  GREEN
+  7     3.18   0.03    0.0%  GREEN
+-----------------------------------------------
+
+Station: MAINZ-RHINE                 
+Baseline Level:   3.20 m
+-----------------------------------------------
+Day  Level(m)  +/-SD   Prob  Warning
+-----------------------------------------------
+  1     3.77   0.01    0.0%  GREEN
+  2     3.82   0.02    0.0%  GREEN
+  3     3.93   0.04    0.0%  GREEN
+  4     3.99   0.06    0.0%  GREEN
+  5     3.97   0.06    0.0%  GREEN
+  6     3.90   0.05    0.0%  GREEN
+  7     3.81   0.05    0.0%  GREEN
+-----------------------------------------------
+
+Station: BASEL-RHINE                 
+Baseline Level:   4.00 m
+-----------------------------------------------
+Day  Level(m)  +/-SD   Prob  Warning
+-----------------------------------------------
+  1     4.61   0.02    0.0%  GREEN
+  2     4.93   0.07    0.0%  GREEN
+  3     5.44   0.13    0.0%  GREEN
+  4     5.73   0.17    0.0%  YELLOW
+  5     5.79   0.18    0.0%  YELLOW
+  6     5.66   0.17    0.0%  YELLOW
+  7     5.49   0.15    0.0%  GREEN
+-----------------------------------------------
+
+Station: LOBITH-RHINE                
+Baseline Level:   8.50 m
+-----------------------------------------------
+Day  Level(m)  +/-SD   Prob  Warning
+-----------------------------------------------
+  1     9.63   0.00    0.0%  GREEN
+  2     9.51   0.01    0.0%  GREEN
+  3     9.45   0.02    0.0%  GREEN
+  4     9.38   0.02    0.0%  GREEN
+  5     9.28   0.02    0.0%  GREEN
+  6     9.18   0.02    0.0%  GREEN
+  7     9.08   0.02    0.0%  GREEN
+-----------------------------------------------
+
+
+==========================================================
+  WARNING SUMMARY (Impact-Based Color Codes)
+==========================================================
+
+Warning Count Summary:
+  RED warnings:       0
+  ORANGE warnings:    0
+  YELLOW warnings:    3
+  GREEN (normal):    32
+
+Stations Requiring Attention:
+-----------------------------
+
+
+
+Forecast written to: forecast.out
+
+==========================================================
+  FORECAST COMPLETE
+==========================================================
+  Warning Level Legend:
+    GREEN  (1) - Normal conditions
+    YELLOW (2) - Advisory - Monitor situation
+    ORANGE (3) - Watch - Prepare for possible flooding
+    RED    (4) - Warning - Flooding expected, take action
+==========================================================
+
+STOP 0
+userland@localhost:~$ cathardened_flood_forecast.f
+-bash: cathardened_flood_forecast.f: command not found
+userland@localhost:~$ cat hardened_flood_forecast.f
+C     ==============================================================
+C     FLDFCST.F - HARDENED FLOOD FORECASTING DEMONSTRATION PROGRAM
+C     ==============================================================
+C
+C     A robust Fortran 77 implementation of a flood forecasting and
+C     early warning system based on concepts from:
+C     - European Flood Forecasting System (EFFS)
+C     - Impact-based forecasting with color-coded warnings
+C     - Probabilistic ensemble forecasting
+C
+C     HARDENING FEATURES:
+C     - Comprehensive input validation with bounds checking
+C     - Defensive programming with error codes
+C     - Safe array access with explicit bounds
+C     - Overflow/underflow protection
+C     - Graceful error handling and recovery
+C     - Detailed diagnostic output
+C
+C     Author: Flood Forecasting Demo System
+C     Version: 1.0 (Hardened)
+C     ==============================================================
+
+      PROGRAM FLDFCST
+      IMPLICIT NONE
+
+C     --------------------------------------------------------------
+C     PARAMETER DECLARATIONS (Hardened with explicit bounds)
+C     --------------------------------------------------------------
+      INTEGER MAXSTN, MAXDAY, MAXENS, MAXHRS
+      PARAMETER (MAXSTN = 100)
+      PARAMETER (MAXDAY = 10)
+      PARAMETER (MAXENS = 50)
+      PARAMETER (MAXHRS = 240)
+
+C     Warning level thresholds (meters above normal)
+      REAL WLVL1, WLVL2, WLVL3, WLVL4
+      PARAMETER (WLVL1 = 0.5)
+      PARAMETER (WLVL2 = 1.5)
+      PARAMETER (WLVL3 = 3.0)
+      PARAMETER (WLVL4 = 5.0)
+
+C     Physical constraints for validation
+      REAL MINLVL, MAXLVL, MINRN, MAXRN
+      PARAMETER (MINLVL = -10.0)
+      PARAMETER (MAXLVL = 50.0)
+      PARAMETER (MINRN = 0.0)
+      PARAMETER (MAXRN = 500.0)
+
+C     --------------------------------------------------------------
+C     VARIABLE DECLARATIONS
+C     --------------------------------------------------------------
+C     Station data arrays
+      CHARACTER*32 STNAME(MAXSTN)
+      REAL STLAT(MAXSTN), STLON(MAXSTN)
+      REAL STBASE(MAXSTN)
+      REAL STCURR(MAXSTN)
+      REAL STAREA(MAXSTN)
+
+C     Forecast arrays
+      REAL FCRAIN(MAXSTN, MAXDAY)
+      REAL FCLVL(MAXSTN, MAXDAY)
+      REAL FCPROB(MAXSTN, MAXDAY)
+
+C     Ensemble forecast arrays
+      REAL ENSLVL(MAXSTN, MAXDAY, MAXENS)
+      REAL ENSMN(MAXSTN, MAXDAY)
+      REAL ENSSD(MAXSTN, MAXDAY)
+
+C     Warning levels (1=GREEN, 2=YELLOW, 3=ORANGE, 4=RED)
+      INTEGER WRNLVL(MAXSTN, MAXDAY)
+
+C     Working variables
+      INTEGER NSTN, NDAY, NENS
+      INTEGER I, J, K, IERR
+      REAL TMPVAL, SUMVAL, SQSUM
+
+C     Error handling
+      INTEGER ERRCNT, MAXERR
+      PARAMETER (MAXERR = 10)
+      CHARACTER*80 ERRMSG
+      LOGICAL VALID
+
+C     I/O unit numbers
+      INTEGER STDIN, STDOUT, INFILE, OUTFIL, LOGFIL
+      PARAMETER (STDIN = 5, STDOUT = 6)
+      PARAMETER (INFILE = 10, OUTFIL = 11, LOGFIL = 12)
+
+C     --------------------------------------------------------------
+C     PROGRAM INITIALIZATION
+C     --------------------------------------------------------------
+      ERRCNT = 0
+
+      WRITE(STDOUT, 1000)
+ 1000 FORMAT(/,
+     &  '==========================================================',/,
+     &  '  HARDENED FLOOD FORECASTING DEMONSTRATION SYSTEM',/,
+     &  '  Version 1.0 - Fortran 77 Implementation',/,
+     &  '==========================================================',/,
+     &  '  Based on European Flood Forecasting System (EFFS)',/,
+     &  '  with impact-based color-coded warnings',/,
+     &  '==========================================================',/)
+
+C     --------------------------------------------------------------
+C     OPEN LOG FILE FOR DIAGNOSTICS
+C     --------------------------------------------------------------
+      OPEN(UNIT=LOGFIL, FILE='fldfcst.log', STATUS='UNKNOWN',
+     &     IOSTAT=IERR)
+      IF (IERR .NE. 0) THEN
+        WRITE(STDOUT, 1010) IERR
+ 1010   FORMAT('WARNING: Cannot open log file (IOSTAT=',I5,')')
+        WRITE(STDOUT, 1011)
+ 1011   FORMAT('         Continuing without logging...',/)
+      ELSE
+        WRITE(LOGFIL, 1012)
+ 1012   FORMAT('FLDFCST Log File Initialized',/,
+     &         '============================',/)
+      END IF
+
+C     --------------------------------------------------------------
+C     LOAD DEMO DATA (Hardened with validation)
+C     --------------------------------------------------------------
+      WRITE(STDOUT, 1020)
+ 1020 FORMAT('Loading demonstration data...',/)
+
+      CALL LODDMO(STNAME, STLAT, STLON, STBASE, STCURR, STAREA,
+     &            FCRAIN, NSTN, NDAY, MAXSTN, MAXDAY, IERR)
+
+      IF (IERR .NE. 0) THEN
+        WRITE(STDOUT, 1030) IERR
+ 1030   FORMAT('FATAL ERROR: Failed to load demo data (Code=',I5,')',/,
+     &         'Program terminated.')
+        STOP 1
+      END IF
+
+C     Validate loaded data
+      CALL VALDTA(STLAT, STLON, STBASE, STCURR, STAREA, FCRAIN,
+     &            NSTN, NDAY, MAXSTN, MAXDAY, MINLVL, MAXLVL,
+     &            MINRN, MAXRN, VALID, ERRMSG)
+
+      IF (.NOT. VALID) THEN
+        WRITE(STDOUT, 1040) ERRMSG
+ 1040   FORMAT('DATA VALIDATION ERROR: ',A,/,
+     &         'Program terminated.')
+        STOP 2
+      END IF
+
+      WRITE(STDOUT, 1050) NSTN, NDAY
+ 1050 FORMAT('Data loaded successfully:',/,
+     &       '  Stations: ',I3,/,
+     &       '  Forecast days: ',I2,/)
+
+C     --------------------------------------------------------------
+C     GENERATE ENSEMBLE FORECASTS
+C     --------------------------------------------------------------
+      WRITE(STDOUT, 1060)
+ 1060 FORMAT('Generating ensemble forecasts...',/)
+
+      NENS = 20
+
+      CALL GENENS(FCRAIN, STBASE, STCURR, STAREA, ENSLVL,
+     &            NSTN, NDAY, NENS, MAXSTN, MAXDAY, MAXENS, IERR)
+
+      IF (IERR .NE. 0) THEN
+        WRITE(STDOUT, 1070) IERR
+ 1070   FORMAT('WARNING: Ensemble generation issue (Code=',I5,')',/,
+     &         'Using deterministic forecast only.',/)
+        NENS = 1
+      END IF
+
+C     --------------------------------------------------------------
+C     COMPUTE ENSEMBLE STATISTICS (Hardened)
+C     --------------------------------------------------------------
+      WRITE(STDOUT, 1080)
+ 1080 FORMAT('Computing ensemble statistics...',/)
+
+      DO 200 I = 1, NSTN
+        DO 190 J = 1, NDAY
+          SUMVAL = 0.0
+          SQSUM = 0.0
+
+          DO 180 K = 1, NENS
+            TMPVAL = ENSLVL(I, J, K)
+            IF (TMPVAL .LT. MINLVL) TMPVAL = MINLVL
+            IF (TMPVAL .GT. MAXLVL) TMPVAL = MAXLVL
+            SUMVAL = SUMVAL + TMPVAL
+  180     CONTINUE
+
+          IF (NENS .GT. 0) THEN
+            ENSMN(I, J) = SUMVAL / REAL(NENS)
+          ELSE
+            ENSMN(I, J) = STCURR(I)
+          END IF
+
+          DO 185 K = 1, NENS
+            TMPVAL = ENSLVL(I, J, K) - ENSMN(I, J)
+            SQSUM = SQSUM + TMPVAL * TMPVAL
+  185     CONTINUE
+
+          IF (NENS .GT. 1) THEN
+            ENSSD(I, J) = SQRT(SQSUM / REAL(NENS - 1))
+          ELSE
+            ENSSD(I, J) = 0.0
+          END IF
+
+          FCLVL(I, J) = ENSMN(I, J)
+
+  190   CONTINUE
+  200 CONTINUE
+
+C     --------------------------------------------------------------
+C     COMPUTE FLOOD PROBABILITIES
+C     --------------------------------------------------------------
+      WRITE(STDOUT, 1090)
+ 1090 FORMAT('Computing flood probabilities...',/)
+
+      CALL CMPPRB(ENSLVL, STBASE, FCPROB, NSTN, NDAY, NENS,
+     &            MAXSTN, MAXDAY, MAXENS, WLVL3, IERR)
+
+C     --------------------------------------------------------------
+C     DETERMINE WARNING LEVELS (Impact-based color coding)
+C     --------------------------------------------------------------
+      WRITE(STDOUT, 1100)
+ 1100 FORMAT('Determining warning levels...',/)
+
+      CALL SETWRN(FCLVL, STBASE, FCPROB, WRNLVL, NSTN, NDAY,
+     &            MAXSTN, MAXDAY, WLVL1, WLVL2, WLVL3, WLVL4)
+
+C     --------------------------------------------------------------
+C     DISPLAY FORECAST RESULTS
+C     --------------------------------------------------------------
+      WRITE(STDOUT, 2000)
+ 2000 FORMAT(/,
+     &  '==========================================================',/,
+     &  '  FLOOD FORECAST RESULTS',/,
+     &  '==========================================================',/)
+
+      CALL DSPFCS(STNAME, STBASE, FCLVL, FCPROB, WRNLVL,
+     &             ENSMN, ENSSD, NSTN, NDAY, MAXSTN, MAXDAY)
+
+C     --------------------------------------------------------------
+C     DISPLAY WARNING SUMMARY
+C     --------------------------------------------------------------
+      WRITE(STDOUT, 2100)
+ 2100 FORMAT(/,
+     &  '==========================================================',/,
+     &  '  WARNING SUMMARY (Impact-Based Color Codes)',/,
+     &  '==========================================================',/)
+
+      CALL DSPWRN(STNAME, WRNLVL, FCPROB, NSTN, NDAY, MAXSTN, MAXDAY)
+
+C     --------------------------------------------------------------
+C     WRITE OUTPUT FILE
+C     --------------------------------------------------------------
+      OPEN(UNIT=OUTFIL, FILE='forecast.out', STATUS='UNKNOWN',
+     &     IOSTAT=IERR)
+      IF (IERR .EQ. 0) THEN
+        CALL WRTOUT(OUTFIL, STNAME, STLAT, STLON, STBASE, FCLVL,
+     &              FCPROB, WRNLVL, ENSMN, ENSSD, NSTN, NDAY,
+     &              MAXSTN, MAXDAY)
+        CLOSE(OUTFIL)
+        WRITE(STDOUT, 2200)
+ 2200   FORMAT(/,'Forecast written to: forecast.out')
+      END IF
+
+C     --------------------------------------------------------------
+C     CLEANUP AND EXIT
+C     --------------------------------------------------------------
+      IF (LOGFIL .GT. 0) CLOSE(LOGFIL)
+
+      WRITE(STDOUT, 9000)
+ 9000 FORMAT(/,
+     &  '==========================================================',/,
+     &  '  FORECAST COMPLETE',/,
+     &  '==========================================================',/,
+     &  '  Warning Level Legend:',/,
+     &  '    GREEN  (1) - Normal conditions',/,
+     &  '    YELLOW (2) - Advisory - Monitor situation',/,
+     &  '    ORANGE (3) - Watch - Prepare for possible flooding',/,
+     &  '    RED    (4) - Warning - Flooding expected, take action',/,
+     &  '==========================================================',/)
+
+      STOP 0
+      END
+
+C     ==============================================================
+C     SUBROUTINE LODDMO - Load demonstration data (Hardened)
+C     ==============================================================
+      SUBROUTINE LODDMO(STNAME, STLAT, STLON, STBASE, STCURR, STAREA,
+     &                  FCRAIN, NSTN, NDAY, MAXSTN, MAXDAY, IERR)
+      IMPLICIT NONE
+
+      INTEGER MAXSTN, MAXDAY, NSTN, NDAY, IERR
+      CHARACTER*32 STNAME(MAXSTN)
+      REAL STLAT(MAXSTN), STLON(MAXSTN)
+      REAL STBASE(MAXSTN), STCURR(MAXSTN), STAREA(MAXSTN)
+      REAL FCRAIN(MAXSTN, MAXDAY)
+
+      INTEGER I, J
+
+      IERR = 0
+
+      NSTN = 5
+      NDAY = 7
+
+      IF (NSTN .GT. MAXSTN) THEN
+        IERR = 1
+        NSTN = MAXSTN
+      END IF
+      IF (NDAY .GT. MAXDAY) THEN
+        IERR = 2
+        NDAY = MAXDAY
+      END IF
+
+      DO 10 I = 1, MAXSTN
+        STNAME(I) = 'UNDEFINED'
+        STLAT(I) = 0.0
+        STLON(I) = 0.0
+        STBASE(I) = 0.0
+        STCURR(I) = 0.0
+        STAREA(I) = 0.0
+        DO 5 J = 1, MAXDAY
+          FCRAIN(I, J) = 0.0
+    5   CONTINUE
+   10 CONTINUE
+
+C     Station 1: Cologne
+      STNAME(1) = 'COLOGNE-RHINE'
+      STLAT(1) = 50.9375
+      STLON(1) = 6.9603
+      STBASE(1) = 3.5
+      STCURR(1) = 4.2
+      STAREA(1) = 144232.0
+
+C     Station 2: Koblenz
+      STNAME(2) = 'KOBLENZ-RHINE'
+      STLAT(2) = 50.3569
+      STLON(2) = 7.5890
+      STBASE(2) = 2.8
+      STCURR(2) = 3.1
+      STAREA(2) = 109320.0
+
+C     Station 3: Mainz
+      STNAME(3) = 'MAINZ-RHINE'
+      STLAT(3) = 50.0000
+      STLON(3) = 8.2711
+      STBASE(3) = 3.2
+      STCURR(3) = 3.8
+      STAREA(3) = 98206.0
+
+C     Station 4: Basel
+      STNAME(4) = 'BASEL-RHINE'
+      STLAT(4) = 47.5596
+      STLON(4) = 7.5886
+      STBASE(4) = 4.0
+      STCURR(4) = 4.5
+      STAREA(4) = 35897.0
+
+C     Station 5: Lobith (NL border)
+      STNAME(5) = 'LOBITH-RHINE'
+      STLAT(5) = 51.8500
+      STLON(5) = 6.1167
+      STBASE(5) = 8.5
+      STCURR(5) = 9.8
+      STAREA(5) = 160800.0
+
+C     Forecast rainfall (mm/day) - Simulated storm event
+      FCRAIN(1,1) = 15.0
+      FCRAIN(1,2) = 35.0
+      FCRAIN(1,3) = 55.0
+      FCRAIN(1,4) = 45.0
+      FCRAIN(1,5) = 25.0
+      FCRAIN(1,6) = 10.0
+      FCRAIN(1,7) = 5.0
+
+      FCRAIN(2,1) = 12.0
+      FCRAIN(2,2) = 30.0
+      FCRAIN(2,3) = 50.0
+      FCRAIN(2,4) = 40.0
+      FCRAIN(2,5) = 20.0
+      FCRAIN(2,6) = 8.0
+      FCRAIN(2,7) = 3.0
+
+      FCRAIN(3,1) = 18.0
+      FCRAIN(3,2) = 40.0
+      FCRAIN(3,3) = 60.0
+      FCRAIN(3,4) = 50.0
+      FCRAIN(3,5) = 30.0
+      FCRAIN(3,6) = 12.0
+      FCRAIN(3,7) = 6.0
+
+      FCRAIN(4,1) = 20.0
+      FCRAIN(4,2) = 45.0
+      FCRAIN(4,3) = 70.0
+      FCRAIN(4,4) = 55.0
+      FCRAIN(4,5) = 35.0
+      FCRAIN(4,6) = 15.0
+      FCRAIN(4,7) = 8.0
+
+      FCRAIN(5,1) = 10.0
+      FCRAIN(5,2) = 25.0
+      FCRAIN(5,3) = 45.0
+      FCRAIN(5,4) = 35.0
+      FCRAIN(5,5) = 18.0
+      FCRAIN(5,6) = 6.0
+      FCRAIN(5,7) = 2.0
+
+      RETURN
+      END
+
+C     ==============================================================
+C     SUBROUTINE VALDTA - Validate input data (Hardened)
+C     ==============================================================
+      SUBROUTINE VALDTA(STLAT, STLON, STBASE, STCURR, STAREA, FCRAIN,
+     &                  NSTN, NDAY, MAXSTN, MAXDAY, MINLVL, MAXLVL,
+     &                  MINRN, MAXRN, VALID, ERRMSG)
+      IMPLICIT NONE
+
+      INTEGER NSTN, NDAY, MAXSTN, MAXDAY
+      REAL STLAT(MAXSTN), STLON(MAXSTN)
+      REAL STBASE(MAXSTN), STCURR(MAXSTN), STAREA(MAXSTN)
+      REAL FCRAIN(MAXSTN, MAXDAY)
+      REAL MINLVL, MAXLVL, MINRN, MAXRN
+      LOGICAL VALID
+      CHARACTER*80 ERRMSG
+
+      INTEGER I, J
+
+      VALID = .TRUE.
+      ERRMSG = ' '
+
+      IF (NSTN .LE. 0 .OR. NSTN .GT. MAXSTN) THEN
+        VALID = .FALSE.
+        ERRMSG = 'Invalid station count'
+        RETURN
+      END IF
+
+      IF (NDAY .LE. 0 .OR. NDAY .GT. MAXDAY) THEN
+        VALID = .FALSE.
+        ERRMSG = 'Invalid forecast day count'
+        RETURN
+      END IF
+
+      DO 100 I = 1, NSTN
+        IF (STLAT(I) .LT. -90.0 .OR. STLAT(I) .GT. 90.0) THEN
+          VALID = .FALSE.
+          WRITE(ERRMSG, 10) I
+   10     FORMAT('Invalid latitude at station ',I3)
+          RETURN
+        END IF
+
+        IF (STLON(I) .LT. -180.0 .OR. STLON(I) .GT. 180.0) THEN
+          VALID = .FALSE.
+          WRITE(ERRMSG, 20) I
+   20     FORMAT('Invalid longitude at station ',I3)
+          RETURN
+        END IF
+
+        IF (STBASE(I) .LT. MINLVL .OR. STBASE(I) .GT. MAXLVL) THEN
+          VALID = .FALSE.
+          WRITE(ERRMSG, 30) I
+   30     FORMAT('Invalid baseline level at station ',I3)
+          RETURN
+        END IF
+
+        IF (STCURR(I) .LT. MINLVL .OR. STCURR(I) .GT. MAXLVL) THEN
+          VALID = .FALSE.
+          WRITE(ERRMSG, 40) I
+   40     FORMAT('Invalid current level at station ',I3)
+          RETURN
+        END IF
+
+        IF (STAREA(I) .LE. 0.0) THEN
+          VALID = .FALSE.
+          WRITE(ERRMSG, 50) I
+   50     FORMAT('Invalid catchment area at station ',I3)
+          RETURN
+        END IF
+
+        DO 90 J = 1, NDAY
+          IF (FCRAIN(I,J) .LT. MINRN .OR. FCRAIN(I,J) .GT. MAXRN) THEN
+            VALID = .FALSE.
+            WRITE(ERRMSG, 60) I, J
+   60       FORMAT('Invalid rainfall at station ',I3,' day ',I2)
+            RETURN
+          END IF
+   90   CONTINUE
+  100 CONTINUE
+
+      RETURN
+      END
+
+C     ==============================================================
+C     SUBROUTINE GENENS - Generate ensemble forecasts (Hardened)
+C     ==============================================================
+      SUBROUTINE GENENS(FCRAIN, STBASE, STCURR, STAREA, ENSLVL,
+     &                  NSTN, NDAY, NENS, MAXSTN, MAXDAY, MAXENS, IERR)
+      IMPLICIT NONE
+
+      INTEGER NSTN, NDAY, NENS, MAXSTN, MAXDAY, MAXENS, IERR
+      REAL FCRAIN(MAXSTN, MAXDAY)
+      REAL STBASE(MAXSTN), STCURR(MAXSTN), STAREA(MAXSTN)
+      REAL ENSLVL(MAXSTN, MAXDAY, MAXENS)
+
+      INTEGER I, J, K
+      REAL BASELV, RAINEF, PERTURB, RNDVAL
+      REAL RUNOFF, ROUTNG
+
+      REAL RCOEF, TLAG, DECAY
+      PARAMETER (RCOEF = 0.6)
+      PARAMETER (TLAG = 1.5)
+      PARAMETER (DECAY = 0.85)
+
+      IERR = 0
+
+      IF (NENS .GT. MAXENS) THEN
+        IERR = 1
+        NENS = MAXENS
+      END IF
+
+C     Generate ensemble members
+      DO 300 I = 1, NSTN
+        DO 290 J = 1, NDAY
+          DO 280 K = 1, NENS
+            IF (J .EQ. 1) THEN
+              BASELV = STCURR(I)
+            ELSE
+              BASELV = ENSLVL(I, J-1, K)
+            END IF
+
+C           Generate perturbation using simple LCG
+            RNDVAL = MOD(I*1000 + J*100 + K*17, 100) / 100.0
+            PERTURB = (RNDVAL - 0.5) * 0.4
+
+            RAINEF = FCRAIN(I, J) * RCOEF * (1.0 + PERTURB)
+
+            RUNOFF = RAINEF * 0.01 * (100000.0 / STAREA(I))
+
+            ROUTNG = RUNOFF / TLAG
+
+            ENSLVL(I, J, K) = BASELV + ROUTNG
+            ENSLVL(I, J, K) = STBASE(I) +
+     &                        (ENSLVL(I, J, K) - STBASE(I)) * DECAY
+
+            IF (ENSLVL(I, J, K) .LT. 0.0) ENSLVL(I, J, K) = 0.0
+            IF (ENSLVL(I, J, K) .GT. 50.0) ENSLVL(I, J, K) = 50.0
+
+  280     CONTINUE
+  290   CONTINUE
+  300 CONTINUE
+
+      RETURN
+      END
+
+C     ==============================================================
+C     SUBROUTINE CMPPRB - Compute flood probabilities (Hardened)
+C     ==============================================================
+      SUBROUTINE CMPPRB(ENSLVL, STBASE, FCPROB, NSTN, NDAY, NENS,
+     &                  MAXSTN, MAXDAY, MAXENS, THRESH, IERR)
+      IMPLICIT NONE
+
+      INTEGER NSTN, NDAY, NENS, MAXSTN, MAXDAY, MAXENS, IERR
+      REAL ENSLVL(MAXSTN, MAXDAY, MAXENS)
+      REAL STBASE(MAXSTN)
+      REAL FCPROB(MAXSTN, MAXDAY)
+      REAL THRESH
+
+      INTEGER I, J, K, NEXCD
+      REAL FLOODLV
+
+      IERR = 0
+
+      DO 200 I = 1, NSTN
+        FLOODLV = STBASE(I) + THRESH
+
+        DO 190 J = 1, NDAY
+          NEXCD = 0
+
+          DO 180 K = 1, NENS
+            IF (ENSLVL(I, J, K) .GE. FLOODLV) THEN
+              NEXCD = NEXCD + 1
+            END IF
+  180     CONTINUE
+
+          IF (NENS .GT. 0) THEN
+            FCPROB(I, J) = REAL(NEXCD) / REAL(NENS)
+          ELSE
+            FCPROB(I, J) = 0.0
+          END IF
+
+          IF (FCPROB(I, J) .LT. 0.0) FCPROB(I, J) = 0.0
+          IF (FCPROB(I, J) .GT. 1.0) FCPROB(I, J) = 1.0
+
+  190   CONTINUE
+  200 CONTINUE
+
+      RETURN
+      END
+
+C     ==============================================================
+C     SUBROUTINE SETWRN - Set warning levels (Impact-based)
+C     ==============================================================
+      SUBROUTINE SETWRN(FCLVL, STBASE, FCPROB, WRNLVL, NSTN, NDAY,
+     &                  MAXSTN, MAXDAY, WLVL1, WLVL2, WLVL3, WLVL4)
+      IMPLICIT NONE
+
+      INTEGER NSTN, NDAY, MAXSTN, MAXDAY
+      REAL FCLVL(MAXSTN, MAXDAY)
+      REAL STBASE(MAXSTN)
+      REAL FCPROB(MAXSTN, MAXDAY)
+      INTEGER WRNLVL(MAXSTN, MAXDAY)
+      REAL WLVL1, WLVL2, WLVL3, WLVL4
+
+      INTEGER I, J
+      REAL RISE
+
+      DO 200 I = 1, NSTN
+        DO 190 J = 1, NDAY
+          RISE = FCLVL(I, J) - STBASE(I)
+
+          IF (RISE .GE. WLVL4 .OR. FCPROB(I,J) .GE. 0.7) THEN
+            WRNLVL(I, J) = 4
+          ELSE IF (RISE .GE. WLVL3 .OR. FCPROB(I,J) .GE. 0.5) THEN
+            WRNLVL(I, J) = 3
+          ELSE IF (RISE .GE. WLVL2 .OR. FCPROB(I,J) .GE. 0.3) THEN
+            WRNLVL(I, J) = 2
+          ELSE
+            WRNLVL(I, J) = 1
+          END IF
+
+  190   CONTINUE
+  200 CONTINUE
+
+      RETURN
+      END
+
+C     ==============================================================
+C     SUBROUTINE DSPFCS - Display forecast results
+C     ==============================================================
+      SUBROUTINE DSPFCS(STNAME, STBASE, FCLVL, FCPROB, WRNLVL,
+     &                   ENSMN, ENSSD, NSTN, NDAY, MAXSTN, MAXDAY)
+      IMPLICIT NONE
+
+      INTEGER NSTN, NDAY, MAXSTN, MAXDAY
+      CHARACTER*32 STNAME(MAXSTN)
+      REAL STBASE(MAXSTN)
+      REAL FCLVL(MAXSTN, MAXDAY)
+      REAL FCPROB(MAXSTN, MAXDAY)
+      INTEGER WRNLVL(MAXSTN, MAXDAY)
+      REAL ENSMN(MAXSTN, MAXDAY)
+      REAL ENSSD(MAXSTN, MAXDAY)
+
+      INTEGER I, J
+      CHARACTER*6 WCOLOR
+
+      DO 200 I = 1, NSTN
+        WRITE(6, 1000) STNAME(I), STBASE(I)
+ 1000   FORMAT('Station: ',A,/,
+     &         'Baseline Level: ',F6.2,' m',/,
+     &         '-----------------------------------------------',/,
+     &         'Day  Level(m)  +/-SD   Prob  Warning',/,
+     &         '-----------------------------------------------')
+
+        DO 190 J = 1, NDAY
+          IF (WRNLVL(I, J) .EQ. 1) THEN
+            WCOLOR = 'GREEN '
+          ELSE IF (WRNLVL(I, J) .EQ. 2) THEN
+            WCOLOR = 'YELLOW'
+          ELSE IF (WRNLVL(I, J) .EQ. 3) THEN
+            WCOLOR = 'ORANGE'
+          ELSE IF (WRNLVL(I, J) .EQ. 4) THEN
+            WCOLOR = 'RED   '
+          ELSE
+            WCOLOR = 'UNKNWN'
+          END IF
+
+          WRITE(6, 1010) J, ENSMN(I,J), ENSSD(I,J),
+     &                   FCPROB(I,J)*100.0, WCOLOR
+ 1010     FORMAT(I3,2X,F7.2,2X,F5.2,2X,F5.1,'%',2X,A6)
+
+  190   CONTINUE
+
+        WRITE(6, 1020)
+ 1020   FORMAT('-----------------------------------------------',/)
+
+  200 CONTINUE
+
+      RETURN
+      END
+
+C     ==============================================================
+C     SUBROUTINE DSPWRN - Display warning summary
+C     ==============================================================
+      SUBROUTINE DSPWRN(STNAME, WRNLVL, FCPROB, NSTN, NDAY,
+     &                  MAXSTN, MAXDAY)
+      IMPLICIT NONE
+
+      INTEGER NSTN, NDAY, MAXSTN, MAXDAY
+      CHARACTER*32 STNAME(MAXSTN)
+      INTEGER WRNLVL(MAXSTN, MAXDAY)
+      REAL FCPROB(MAXSTN, MAXDAY)
+
+      INTEGER I, J
+      INTEGER NRED, NORG, NYEL, NGRN
+      INTEGER MAXWRN
+
+      NRED = 0
+      NORG = 0
+      NYEL = 0
+      NGRN = 0
+
+      DO 100 I = 1, NSTN
+        DO 90 J = 1, NDAY
+          IF (WRNLVL(I, J) .EQ. 4) NRED = NRED + 1
+          IF (WRNLVL(I, J) .EQ. 3) NORG = NORG + 1
+          IF (WRNLVL(I, J) .EQ. 2) NYEL = NYEL + 1
+          IF (WRNLVL(I, J) .EQ. 1) NGRN = NGRN + 1
+   90   CONTINUE
+  100 CONTINUE
+
+      WRITE(6, 1000) NRED, NORG, NYEL, NGRN
+ 1000 FORMAT('Warning Count Summary:',/,
+     &       '  RED warnings:    ',I4,/,
+     &       '  ORANGE warnings: ',I4,/,
+     &       '  YELLOW warnings: ',I4,/,
+     &       '  GREEN (normal):  ',I4,/)
+
+      WRITE(6, 1010)
+ 1010 FORMAT('Stations Requiring Attention:',/,
+     &       '-----------------------------')
+
+      DO 200 I = 1, NSTN
+        MAXWRN = 1
+        DO 190 J = 1, NDAY
+          IF (WRNLVL(I, J) .GT. MAXWRN) MAXWRN = WRNLVL(I, J)
+  190   CONTINUE
+
+        IF (MAXWRN .GE. 3) THEN
+          IF (MAXWRN .EQ. 4) THEN
+            WRITE(6, 1020) STNAME(I)
+ 1020       FORMAT('  [RED]    ',A,' - IMMEDIATE ACTION REQUIRED')
+          ELSE
+            WRITE(6, 1030) STNAME(I)
+ 1030       FORMAT('  [ORANGE] ',A,' - PREPARE FOR FLOODING')
+          END IF
+        END IF
+  200 CONTINUE
+
+      WRITE(6, 1040)
+ 1040 FORMAT(/)
+
+      RETURN
+      END
+
+C     ==============================================================
+C     SUBROUTINE WRTOUT - Write forecast to output file
+C     ==============================================================
+      SUBROUTINE WRTOUT(IUNIT, STNAME, STLAT, STLON, STBASE, FCLVL,
+     &                  FCPROB, WRNLVL, ENSMN, ENSSD, NSTN, NDAY,
+     &                  MAXSTN, MAXDAY)
+      IMPLICIT NONE
+
+      INTEGER IUNIT, NSTN, NDAY, MAXSTN, MAXDAY
+      CHARACTER*32 STNAME(MAXSTN)
+      REAL STLAT(MAXSTN), STLON(MAXSTN), STBASE(MAXSTN)
+      REAL FCLVL(MAXSTN, MAXDAY)
+      REAL FCPROB(MAXSTN, MAXDAY)
+      INTEGER WRNLVL(MAXSTN, MAXDAY)
+      REAL ENSMN(MAXSTN, MAXDAY)
+      REAL ENSSD(MAXSTN, MAXDAY)
+
+      INTEGER I, J
+
+      WRITE(IUNIT, 1000)
+ 1000 FORMAT('# FLOOD FORECAST OUTPUT FILE',/,
+     &       '# Generated by FLDFCST v1.0 (Hardened)',/,
+     &       '#',/,
+     &       '# Format: CSV with header',/,
+     &       '#')
+
+      WRITE(IUNIT, 1010)
+ 1010 FORMAT('STATION,LAT,LON,BASELINE,DAY,LEVEL,STDDEV,PROB,WARNING')
+
+      DO 200 I = 1, NSTN
+        DO 190 J = 1, NDAY
+          WRITE(IUNIT, 1020) STNAME(I)(1:20), STLAT(I), STLON(I),
+     &                       STBASE(I), J, ENSMN(I,J), ENSSD(I,J),
+     &                       FCPROB(I,J), WRNLVL(I,J)
+ 1020     FORMAT(A20,',',F8.4,',',F9.4,',',F6.2,',',I2,',',
+     &           F7.2,',',F5.2,',',F5.3,',',I1)
+  190   CONTINUE
+  200 CONTINUE
+
+      RETURN
+      END
+userland@localhost:~$
